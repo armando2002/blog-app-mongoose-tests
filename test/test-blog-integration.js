@@ -179,4 +179,28 @@ describe('Blogposts API resource', function() {
         });
     });
         // DELETE
+        describe('DELETE Endpoint', function() {
+            // 1. get a post
+            // 2. make a DELETE request for the post ID
+            // 3. assert correct status code
+            // 4. prove that post with ID doesn't exist in DB
+            it('delete a blog post by ID', function() {
+                let blogpost;
+
+                return BlogPost
+                    .findOne()
+                    .then(function(_blogpost) {
+                        blogpost = _blogpost;
+                        return chai.request(app).delete(`/posts/${blogpost.id}`);
+                    })
+                    .then(function(res) {
+                        expect(res).to.have.status(204);
+                        return BlogPost.findById(blogpost.id);
+                    })
+                    .then(function(_blogpost) {
+                        expect(_blogpost).to.be.null;
+                    });
+            });
+        });
+
     });
