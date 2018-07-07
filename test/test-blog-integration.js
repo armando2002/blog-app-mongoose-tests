@@ -147,6 +147,36 @@ describe('Blogposts API resource', function() {
                 });
             });
         // PUT
+        describe('PUT Endpoint', function() {
+            // 1. get an existing blog post from DB
+            // 2. make a PUT request to update that blog post
+            // 3. prove blog post returned by request contains updated data
+            // 4. provie blog post in DB is correctly updated
+            it('should update fields you send over', function() {
+                const updateData = {
+                    title: 'fooTitle',
+                    content: 'barContent'
+                };
 
+                return BlogPost
+                    .findOne()
+                    .then(function(blogpost) {
+                        updateData.id = blogpost.id;
+
+                        return chai.request(app)
+                            .put(`/posts/${blogpost.id}`)
+                            .send(updateData);
+                    })
+                    .then(function(res) {
+                        expect(res).to.have.status(204);
+
+                        return BlogPost.findById(updateData.id);
+                    })
+                    .then(function(blogpost) {
+                        expect(blogpost.title).to.equal(updateData.title);
+                        expect(blogpost.content).to.equal(updateData.content);
+                    });
+        });
+    });
         // DELETE
     });
